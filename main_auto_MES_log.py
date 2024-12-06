@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import filedialog, messagebox
 import os
 
 # Hàm để xử lý tạo tệp mới
@@ -24,15 +24,20 @@ def create_files():
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
 
-    # Đọc dữ liệu từ file list.txt
+    # Kiểm tra xem tệp đã được chọn chưa
+    if not file_path.get():
+        messagebox.showerror("Error", "Bạn chưa chọn tệp!")
+        return
+
+    # Đọc dữ liệu từ tệp đã chọn
     try:
-        with open('list.txt', 'r') as file:
+        with open(file_path.get(), 'r') as file:
             lines = file.readlines()
 
-        # Lặp qua từng dòng trong file list.txt
+        # Lặp qua từng dòng trong tệp đã chọn
         for line_content in lines:
             line_content = line_content.strip()  # Loại bỏ ký tự newline
-            filename = f"{line}_{date}{time}_{line_content}.txt"  # Tạo tên tệp theo nội dung dòng
+            filename = f"{line}_{date}_{time}_{line_content}.txt"  # Tạo tên tệp theo nội dung dòng
 
             # Tạo nội dung tệp
             file_content = ";".join([
@@ -50,8 +55,8 @@ def create_files():
             ])
 
             # Tạo tệp mới trong thư mục đã tạo và ghi nội dung vào đó
-            file_path = os.path.join(folder_name, filename)
-            with open(file_path, 'w') as new_file:
+            file_path_to_save = os.path.join(folder_name, filename)
+            with open(file_path_to_save, 'w') as new_file:
                 new_file.write(file_content)
 
         # Hiển thị thông báo thành công
@@ -75,12 +80,24 @@ def validate_number_input(char, text_var, max_length=10):
         return True
     return False
 
+# Hàm chọn tệp
+def choose_file():
+    # Mở hộp thoại chọn tệp và lấy đường dẫn tệp
+    selected_file = filedialog.askopenfilename(title="Chọn tệp dữ liệu", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+    if selected_file:
+        # Hiển thị tên tệp trong label
+        label_file_name.config(text=f"Tệp đã chọn: {os.path.basename(selected_file)}")
+        file_path.set(selected_file)  # Lưu đường dẫn tệp vào biến
+
 # Khởi tạo giao diện GUI
 root = tk.Tk()
 root.title("Tạo Tệp từ Dữ Liệu")
 
 # Thiết lập kích thước cửa sổ
 root.geometry("500x400")  # Đặt chiều rộng 500px và chiều cao 400px
+
+# Khởi tạo biến lưu đường dẫn tệp
+file_path = tk.StringVar()
 
 # Tạo các trường nhập liệu
 tk.Label(root, text="Model:").grid(row=0, column=0)
@@ -117,9 +134,17 @@ entry_side = tk.Entry(root)
 entry_side.grid(row=5, column=1)
 entry_side.bind("<KeyRelease>", to_uppercase)
 
+# Thêm nút chọn tệp
+button_choose_file = tk.Button(root, text="Chọn Tệp", command=choose_file)
+button_choose_file.grid(row=6, column=0, columnspan=2)
+
+# Thêm label để hiển thị tên tệp được chọn
+label_file_name = tk.Label(root, text="Tệp chưa được chọn")
+label_file_name.grid(row=7, column=0, columnspan=2)
+
 # Tạo nút để xử lý việc tạo tệp
 button_create = tk.Button(root, text="Tạo Tệp", command=create_files)
-button_create.grid(row=6, column=0, columnspan=2)
+button_create.grid(row=8, column=0, columnspan=2)
 
 # Chạy vòng lặp GUI
 root.mainloop()
