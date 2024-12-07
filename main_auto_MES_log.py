@@ -48,7 +48,7 @@ def to_uppercase(event):
     event.widget.insert(0, current_text.upper())
 
 # Hàm kiểm tra chỉ nhập số
-def validate_number_input(char, text_var, max_length=10):
+def validate_number_input(char, text_var, max_length=8):
     if char.isdigit() or char == "":
         return True
     return False
@@ -71,7 +71,7 @@ file_path = tk.StringVar()
 
 # Tạo Frame chứa các trường nhập liệu
 frame_input = tk.Frame(root, padx=20, pady=20, bg="#f0f0f0")
-frame_input.grid(row=0, column=0, sticky="nsew")
+frame_input.grid(row=0, column=0, sticky="news")
 
 # Các Label và Entry trong Frame
 tk.Label(frame_input, text="Model:", font=("Arial", 10), bg="#f0f0f0").grid(row=0, column=0, pady=5, sticky="w")
@@ -103,6 +103,17 @@ tk.Label(frame_input, text="Side:", font=("Arial", 10), bg="#f0f0f0").grid(row=5
 entry_side = tk.Entry(frame_input, font=("Arial", 10))
 entry_side.grid(row=5, column=1, pady=5)
 entry_side.bind("<KeyRelease>", to_uppercase)
+
+# Tạo Frame chứa các thong tin
+frame_info = tk.Frame(root, padx=20, pady=20, bg="#f0f0f0")
+frame_info.grid(row=0, column=1, sticky="news")
+#label guild
+label_infor = tk.Label(frame_info, 
+                       text="Hướng dẫn:\n1. Nhập thông tin model, line,... \n2. Bấm chọn tệp danh sách các mã QR cần tạo.\n3. Bấm tạo tệp, sau đó một thư mục kết quả sẽ được tạo.", 
+                       font=("Arial", 10), 
+                       bg="yellow", 
+                       anchor="w")
+label_infor.grid(row=0, column=0, padx=5, sticky="w")  # Căn lề trái trong ô
 
 # Thêm nút chọn tệp
 button_choose_file = tk.Button(root, text="Chọn Tệp", font=("Arial", 12), bg="#4CAF50", fg="white", relief="flat", command=choose_file)
